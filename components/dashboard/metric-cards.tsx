@@ -1,5 +1,6 @@
 "use client";
 
+import * as React from "react";
 import type { LucideIcon } from "lucide-react";
 import {
   Coins,
@@ -21,8 +22,43 @@ const METRIC_ICONS: Record<string, LucideIcon> = {
   conversion: MessageCircle,
 };
 
+function MetricCardsSkeleton() {
+  return (
+    <div className="bg-card rounded-xl border">
+      <div className="flex flex-col gap-0 lg:flex-row">
+        {Array.from({ length: 4 }).map((_, i) => (
+          <div
+            key={i}
+            className="relative flex-1 space-y-3 p-4 sm:p-6 lg:py-4"
+          >
+            <div className="flex items-center gap-3">
+              <Skeleton className="size-10 shrink-0 rounded-lg" />
+              <Skeleton className="h-4 w-28" />
+            </div>
+            <Skeleton className="h-8 w-32" />
+            <Skeleton className="h-3 w-full max-w-[200px]" />
+            {i < 3 && (
+              <div
+                className="bg-border absolute right-0 bottom-0 left-0 h-px lg:top-4 lg:right-0 lg:bottom-4 lg:left-auto lg:h-auto lg:w-px"
+                aria-hidden
+              />
+            )}
+          </div>
+        ))}
+      </div>
+    </div>
+  );
+}
+
 export function MetricCards({ dateRange }: { dateRange: DateRangePreset }) {
+  const [hydrated, setHydrated] = React.useState(false);
+  React.useEffect(() => setHydrated(true), []);
+
   const { data, isPending, isError } = useMetrics(dateRange);
+
+  if (!hydrated) {
+    return <MetricCardsSkeleton />;
+  }
 
   if (isError) {
     return (
@@ -33,31 +69,7 @@ export function MetricCards({ dateRange }: { dateRange: DateRangePreset }) {
   }
 
   if (isPending || !data) {
-    return (
-      <div className="bg-card rounded-xl border">
-        <div className="flex flex-col gap-0 lg:flex-row">
-          {Array.from({ length: 4 }).map((_, i) => (
-            <div
-              key={i}
-              className="relative flex-1 space-y-3 p-4 sm:p-6 lg:py-4"
-            >
-              <div className="flex items-center gap-3">
-                <Skeleton className="size-10 shrink-0 rounded-lg" />
-                <Skeleton className="h-4 w-28" />
-              </div>
-              <Skeleton className="h-8 w-32" />
-              <Skeleton className="h-3 w-full max-w-[200px]" />
-              {i < 3 && (
-                <div
-                  className="bg-border absolute right-0 bottom-0 left-0 h-px lg:top-4 lg:right-0 lg:bottom-4 lg:left-auto lg:h-auto lg:w-px"
-                  aria-hidden
-                />
-              )}
-            </div>
-          ))}
-        </div>
-      </div>
-    );
+    return <MetricCardsSkeleton />;
   }
 
   const metrics = data.metrics;
