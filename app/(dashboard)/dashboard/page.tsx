@@ -1,7 +1,11 @@
+import { Suspense } from "react";
+import { DashboardSkeleton } from "@/components/dashboard/dashboard-skeleton";
+import { DashboardView } from "@/components/dashboard/dashboard-view";
+
 export default function DashboardPage() {
   return (
-    <div className="text-muted-foreground flex flex-1 items-center justify-center rounded-lg border border-dashed border-border p-12 text-sm">
-      Dashboard content loads in the next phases.
-    </div>
+    <Suspense fallback={<DashboardSkeleton />}>
+      <DashboardView />
+    </Suspense>
   );
 }
