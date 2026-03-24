@@ -1,6 +1,7 @@
 "use client";
 
 import type { DateRangePreset } from "@/lib/types";
+import { DATE_RANGE_LABELS } from "@/lib/date-range-labels";
 import {
   Select,
   SelectContent,
@@ -10,13 +11,9 @@ import {
   SelectValue,
 } from "@/components/ui/select";
 
-const OPTIONS: { value: DateRangePreset; label: string }[] = [
-  { value: "7d", label: "Last 7 days" },
-  { value: "30d", label: "Last 30 days" },
-  { value: "3m", label: "Last 3 months" },
-  { value: "6m", label: "Last 6 months" },
-  { value: "ytd", label: "This year" },
-];
+const OPTIONS: { value: DateRangePreset; label: string }[] = (
+  ["7d", "30d", "3m", "6m", "ytd"] as const
+).map((value) => ({ value, label: DATE_RANGE_LABELS[value] }));
 
 export function DateRangeFilter({
   value,

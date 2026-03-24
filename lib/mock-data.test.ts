@@ -113,8 +113,9 @@ describe("buildMetricsWithJitter / scaleLeadSources / scaleRevenue", () => {
 
   it("scaleRevenue returns months and consistent best month fields", () => {
     vi.spyOn(Math, "random").mockReturnValue(0.5);
-    const r = scaleRevenue("30d");
-    expect(r.months).toHaveLength(6);
+    const now = new Date("2025-06-15T12:00:00Z");
+    const r = scaleRevenue("30d", now);
+    expect(r.months).toHaveLength(4);
     const maxThisYear = Math.max(...r.months.map((m) => m.thisYear));
     expect(r.bestMonthAmount).toBe(maxThisYear);
     expect(r.months.find((m) => m.month === r.bestMonth)?.thisYear).toBe(maxThisYear);

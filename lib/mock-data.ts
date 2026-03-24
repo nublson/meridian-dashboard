@@ -1,4 +1,13 @@
-import { addDays, startOfYear, subDays, subMonths } from "date-fns";
+import {
+  addDays,
+  eachDayOfInterval,
+  eachMonthOfInterval,
+  format,
+  startOfMonth,
+  startOfYear,
+  subDays,
+  subMonths,
+} from "date-fns";
 import type {
   DateRangePreset,
   Deal,
@@ -252,18 +261,96 @@ export function scaleLeadSources(
   return { slices, totalLeads };
 }
 
-export function scaleRevenue(preset: DateRangePreset): {
+type RevenueBucket = { label: string; templateIndex: number };
+
+function buildRevenueBuckets(
+  preset: DateRangePreset,
+  now: Date,
+): RevenueBucket[] {
+  switch (preset) {
+    case "7d": {
+      const start = subDays(now, 6);
+      return eachDayOfInterval({ start, end: now }).map((d, i) => ({
+        label: format(d, "MMM d"),
+        templateIndex: i,
+      }));
+    }
+    case "30d": {
+      const rangeStart = subDays(now, 29);
+      const out: RevenueBucket[] = [];
+      for (let w = 0; w < 4; w++) {
+        const bucketStart = addDays(rangeStart, Math.floor((w * 30) / 4));
+        out.push({
+          label: format(bucketStart, "MMM d"),
+          templateIndex: w,
+        });
+      }
+      return out;
+    }
+    case "3m": {
+      const endMonth = startOfMonth(now);
+      const startMonth = subMonths(endMonth, 2);
+      return eachMonthOfInterval({ start: startMonth, end: endMonth }).map(
+        (d, i) => ({
+          label: format(d, "MMM"),
+          templateIndex: i,
+        }),
+      );
+    }
+    case "6m": {
+      const endMonth = startOfMonth(now);
+      const startMonth = subMonths(endMonth, 5);
+      return eachMonthOfInterval({ start: startMonth, end: endMonth }).map(
+        (d, i) => ({
+          label: format(d, "MMM"),
+          templateIndex: i,
+        }),
+      );
+    }
+    case "ytd": {
+      const endMonth = startOfMonth(now);
+      return eachMonthOfInterval({
+        start: startOfYear(now),
+        end: endMonth,
+      }).map((d, i) => ({
+        label: format(d, "MMM"),
+        templateIndex: i,
+      }));
+    }
+    default: {
+      const endMonth = startOfMonth(now);
+      const startMonth = subMonths(endMonth, 5);
+      return eachMonthOfInterval({ start: startMonth, end: endMonth }).map(
+        (d, i) => ({
+          label: format(d, "MMM"),
+          templateIndex: i,
+        }),
+      );
+    }
+  }
+}
+
+export function scaleRevenue(
+  preset: DateRangePreset,
+  now = new Date(),
+): {
   months: RevenueMonth[];
   totalRevenue: number;
   bestMonth: string;
   bestMonthAmount: number;
 } {
   const mult = rangeMultiplier(preset);
-  const months = MOCK_REVENUE_MONTHS.map((m) => ({
-    month: m.month,
-    thisYear: Math.round(m.thisYear * mult * (0.97 + Math.random() * 0.06)),
-    prevYear: Math.round(m.prevYear * mult * (0.97 + Math.random() * 0.06)),
-  }));
+  const jitter = () => 0.97 + Math.random() * 0.06;
+  const buckets = buildRevenueBuckets(preset, now);
+  const tmpl = MOCK_REVENUE_MONTHS;
+  const months: RevenueMonth[] = buckets.map((b) => {
+    const row = tmpl[b.templateIndex % tmpl.length];
+    return {
+      month: b.label,
+      thisYear: Math.round(row.thisYear * mult * jitter()),
+      prevYear: Math.round(row.prevYear * mult * jitter()),
+    };
+  });
   let bestMonth = months[0].month;
   let bestMonthAmount = months[0].thisYear;
   for (const m of months) {
