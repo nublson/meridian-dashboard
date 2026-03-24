@@ -1,4 +1,5 @@
 import { NextResponse } from "next/server";
+import { csvEscape } from "@/lib/csv-escape";
 import {
   buildMetricsWithJitter,
   filterDealsByCloseDate,
@@ -8,11 +9,6 @@ import {
   scaleRevenue,
 } from "@/lib/mock-data";
 import type { ExportFormat } from "@/lib/types";
-
-function csvEscape(s: string): string {
-  if (/[",\n]/.test(s)) return `"${s.replace(/"/g, '""')}"`;
-  return s;
-}
 
 export async function GET(request: Request) {
   const { searchParams } = new URL(request.url);
