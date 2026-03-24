@@ -74,13 +74,13 @@ export function DashboardHeader({ title }: { title: string }) {
             size="icon"
             render={
               <a
-                href="https://github.com"
+                href="https://github.com/nublson/meridian-dashboard"
                 target="_blank"
                 rel="noopener noreferrer"
               />
             }
             nativeButton={false}
-            aria-label="GitHub"
+            aria-label="View Meridian dashboard on GitHub"
           >
             <Code2 />
           </Button>
