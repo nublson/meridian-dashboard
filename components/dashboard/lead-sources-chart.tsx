@@ -90,7 +90,7 @@ export function LeadSourcesChart({ dateRange }: { dateRange: DateRangePreset }) 
   }
 
   return (
-    <Card className="flex w-full flex-col xl:w-[410px]">
+    <Card className="flex w-full flex-col lg:w-[410px]">
       <CardHeader>
         <div className="flex flex-col gap-1">
           <CardTitle>Lead Sources</CardTitle>

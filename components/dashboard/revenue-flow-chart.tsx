@@ -166,8 +166,8 @@ export function RevenueFlowChart({ dateRange }: { dateRange: DateRangePreset }) 
         </div>
       </CardHeader>
       <CardContent className="flex flex-col gap-4 pt-0">
-        <div className="flex flex-col gap-4 xl:flex-row xl:gap-6">
-          <div className="flex w-full flex-col gap-4 xl:w-[280px] xl:shrink-0">
+        <div className="flex flex-col gap-4 lg:flex-row lg:gap-6">
+          <div className="flex w-full flex-col gap-4 lg:w-[280px] lg:shrink-0">
             <div>
               <p className="text-2xl font-bold tracking-tight tabular-nums">
                 {formatCurrency(lastSixMonthsTotal)}

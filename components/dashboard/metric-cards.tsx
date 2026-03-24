@@ -35,11 +35,11 @@ export function MetricCards({ dateRange }: { dateRange: DateRangePreset }) {
   if (isPending || !data) {
     return (
       <div className="bg-card rounded-xl border">
-        <div className="flex flex-col gap-0 xl:flex-row">
+        <div className="flex flex-col gap-0 lg:flex-row">
           {Array.from({ length: 4 }).map((_, i) => (
             <div
               key={i}
-              className="relative flex-1 space-y-3 p-4 sm:p-6 xl:py-4"
+              className="relative flex-1 space-y-3 p-4 sm:p-6 lg:py-4"
             >
               <div className="flex items-center gap-3">
                 <Skeleton className="size-10 shrink-0 rounded-lg" />
@@ -49,7 +49,7 @@ export function MetricCards({ dateRange }: { dateRange: DateRangePreset }) {
               <Skeleton className="h-3 w-full max-w-[200px]" />
               {i < 3 && (
                 <div
-                  className="bg-border absolute right-0 bottom-0 left-0 h-px xl:top-4 xl:right-0 xl:bottom-4 xl:left-auto xl:h-auto xl:w-px"
+                  className="bg-border absolute right-0 bottom-0 left-0 h-px lg:top-4 lg:right-0 lg:bottom-4 lg:left-auto lg:h-auto lg:w-px"
                   aria-hidden
                 />
               )}
@@ -64,7 +64,7 @@ export function MetricCards({ dateRange }: { dateRange: DateRangePreset }) {
 
   return (
     <div className="bg-card rounded-xl border">
-      <div className="flex flex-col xl:flex-row">
+      <div className="flex flex-col lg:flex-row">
         {metrics.map((m, index) => {
           const MetricIcon = METRIC_ICONS[m.id] ?? Coins;
           const isUp = m.direction === "up";
@@ -87,10 +87,10 @@ export function MetricCards({ dateRange }: { dateRange: DateRangePreset }) {
           return (
             <div
               key={m.id}
-              className="relative flex-1 p-4 sm:p-6 xl:py-4"
+              className="relative flex-1 p-4 sm:p-6 lg:py-4"
             >
               <span
-                className="bg-primary absolute top-4 right-4 size-2 rounded-full animate-live-pulse sm:top-6 sm:right-6 xl:top-5 xl:right-5"
+                className="bg-primary absolute top-4 right-4 size-2 rounded-full animate-live-pulse sm:top-6 sm:right-6 lg:top-5 lg:right-5"
                 aria-hidden
               />
               <div className="flex items-center gap-3">
@@ -127,7 +127,7 @@ export function MetricCards({ dateRange }: { dateRange: DateRangePreset }) {
               </div>
               {index < metrics.length - 1 && (
                 <div
-                  className="bg-border absolute right-0 bottom-0 left-0 h-px xl:top-4 xl:right-0 xl:bottom-4 xl:left-auto xl:h-auto xl:w-px"
+                  className="bg-border absolute right-0 bottom-0 left-0 h-px lg:top-4 lg:right-0 lg:bottom-4 lg:left-auto lg:h-auto lg:w-px"
                   aria-hidden
                 />
               )}
