@@ -2,9 +2,9 @@
 
 import type { LucideIcon } from "lucide-react";
 import {
-  BarChart2,
+  Coins,
   MessageCircle,
-  ShoppingBag,
+  Package,
   TrendingDown,
   TrendingUp,
   Users,
@@ -12,18 +12,11 @@ import {
 import { useMetrics } from "@/lib/hooks/use-metrics";
 import type { DateRangePreset } from "@/lib/types";
 import { formatCurrency, formatPercent, cn } from "@/lib/utils";
-import {
-  Card,
-  CardContent,
-  CardFooter,
-  CardHeader,
-  CardTitle,
-} from "@/components/ui/card";
 import { Skeleton } from "@/components/ui/skeleton";
 
 const METRIC_ICONS: Record<string, LucideIcon> = {
-  "product-revenue": BarChart2,
-  "total-sales": ShoppingBag,
+  "product-revenue": Coins,
+  "total-sales": Package,
   "total-deals": Users,
   conversion: MessageCircle,
 };
@@ -41,80 +34,96 @@ export function MetricCards({ dateRange }: { dateRange: DateRangePreset }) {
 
   if (isPending || !data) {
     return (
-      <div className="grid gap-4 sm:grid-cols-2 md:grid-cols-4">
-        {Array.from({ length: 4 }).map((_, i) => (
-          <Card key={i}>
-            <CardHeader className="flex flex-col gap-2">
-              <Skeleton className="h-4 w-24" />
-            </CardHeader>
-            <CardContent>
+      <div className="bg-card rounded-xl border p-4 sm:p-6">
+        <div className="flex flex-col gap-0 xl:flex-row">
+          {Array.from({ length: 4 }).map((_, i) => (
+            <div
+              key={i}
+              className="relative flex-1 space-y-3 p-4 sm:p-6 xl:py-4"
+            >
+              <div className="flex items-center gap-3">
+                <Skeleton className="size-10 shrink-0 rounded-lg" />
+                <Skeleton className="h-4 w-28" />
+              </div>
               <Skeleton className="h-8 w-32" />
-            </CardContent>
-            <CardFooter>
-              <Skeleton className="h-3 w-full" />
-            </CardFooter>
-          </Card>
-        ))}
+              <Skeleton className="h-3 w-full max-w-[200px]" />
+              {i < 3 && (
+                <div
+                  className="bg-border absolute right-0 bottom-0 left-0 h-px xl:top-4 xl:right-0 xl:bottom-4 xl:left-auto xl:h-auto xl:w-px"
+                  aria-hidden
+                />
+              )}
+            </div>
+          ))}
+        </div>
       </div>
     );
   }
 
-  return (
-    <div className="grid gap-4 sm:grid-cols-2 md:grid-cols-4">
-      {data.metrics.map((m) => {
-        const MetricIcon = METRIC_ICONS[m.id] ?? BarChart2;
-        const isUp = m.direction === "up";
-        const TrendIcon = isUp ? TrendingUp : TrendingDown;
-        const display =
-          m.displayValue ??
-          (m.suffix === "%"
-            ? formatPercent(Math.round(m.value))
-            : m.id === "product-revenue"
-              ? formatCurrency(m.value)
-              : m.value.toLocaleString());
-        const absPart =
-          m.id === "product-revenue"
-            ? formatCurrency(Math.abs(m.changeAbsolute))
-            : Math.abs(m.changeAbsolute).toLocaleString();
-        const changeLabel =
-          m.suffix === "%"
-            ? `${m.changePercent > 0 ? "+" : ""}${m.changePercent}% vs last month`
-            : `${m.changePercent > 0 ? "+" : ""}${m.changePercent}% (${m.changeAbsolute >= 0 ? "+" : "-"}${absPart}) vs last month`;
+  const metrics = data.metrics;
 
-        return (
-          <Card key={m.id} className="relative overflow-hidden">
-            <span
-              className="bg-primary absolute top-3 right-3 size-2 rounded-full animate-live-pulse"
-              aria-hidden
-            />
-            <CardHeader className="flex flex-row items-center gap-2 space-y-0 pb-2">
-              <MetricIcon
-                className="text-muted-foreground size-4 shrink-0"
+  return (
+    <div className="bg-card rounded-xl border p-4 sm:p-6">
+      <div className="flex flex-col xl:flex-row">
+        {metrics.map((m, index) => {
+          const MetricIcon = METRIC_ICONS[m.id] ?? Coins;
+          const isUp = m.direction === "up";
+          const TrendIcon = isUp ? TrendingUp : TrendingDown;
+          const display =
+            m.displayValue ??
+            (m.suffix === "%"
+              ? formatPercent(Math.round(m.value))
+              : m.id === "product-revenue"
+                ? formatCurrency(m.value)
+                : m.value.toLocaleString());
+          const absPart =
+            m.id === "product-revenue"
+              ? formatCurrency(Math.abs(m.changeAbsolute))
+              : Math.abs(m.changeAbsolute).toLocaleString();
+          const changeLabel =
+            m.suffix === "%"
+              ? `${m.changePercent > 0 ? "+" : ""}${m.changePercent}% vs last month`
+              : `${m.changePercent > 0 ? "+" : ""}${m.changePercent}% (${m.changeAbsolute >= 0 ? "+" : "-"}${absPart}) vs last month`;
+
+          return (
+            <div
+              key={m.id}
+              className="relative flex-1 p-4 sm:p-6 xl:py-4"
+            >
+              <span
+                className="bg-primary absolute top-4 right-4 size-2 rounded-full animate-live-pulse sm:top-6 sm:right-6 xl:top-5 xl:right-5"
                 aria-hidden
               />
-              <CardTitle className="text-muted-foreground text-sm font-medium">
-                {m.label}
-              </CardTitle>
-            </CardHeader>
-            <CardContent className="pb-2">
-              <p className="text-2xl font-semibold tracking-tight tabular-nums">
+              <div className="flex items-center gap-3">
+                <div className="bg-primary/10 text-primary flex size-10 shrink-0 items-center justify-center rounded-lg p-2">
+                  <MetricIcon className="size-5" aria-hidden />
+                </div>
+                <p className="text-muted-foreground text-sm font-medium">
+                  {m.label}
+                </p>
+              </div>
+              <p className="mt-4 text-2xl font-semibold tracking-tight tabular-nums">
                 {display}
               </p>
-            </CardContent>
-            <CardFooter className="flex flex-col items-start gap-1 pt-0">
               <p
                 className={cn(
-                  "flex items-center gap-1 text-xs font-medium",
+                  "mt-2 flex items-center gap-1 text-xs font-medium",
                   isUp ? "text-success" : "text-destructive",
                 )}
               >
-                <TrendIcon />
+                <TrendIcon className="size-3.5 shrink-0" />
                 {changeLabel}
               </p>
-            </CardFooter>
-          </Card>
-        );
-      })}
+              {index < metrics.length - 1 && (
+                <div
+                  className="bg-border absolute right-0 bottom-0 left-0 h-px xl:top-4 xl:right-0 xl:bottom-4 xl:left-auto xl:h-auto xl:w-px"
+                  aria-hidden
+                />
+              )}
+            </div>
+          );
+        })}
+      </div>
     </div>
   );
 }

@@ -21,7 +21,7 @@ export function WelcomeSection({
     <div className="flex flex-col gap-4 md:flex-row md:items-start md:justify-between">
       <div className="flex flex-col gap-1">
         <h2 className="text-2xl font-semibold tracking-tight">
-          Welcome Back, John!
+          Welcome Back, Nubelson!
         </h2>
         <p className="text-muted-foreground text-sm">
           Today you have 3 new leads, 2 follow-ups due.
