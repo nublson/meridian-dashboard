@@ -1,11 +1,9 @@
 <p align="center">
-  <a href="./Meridian%20_%20Analytics%20Dashboard.jpeg">
-    <img
-      src="./Meridian%20_%20Analytics%20Dashboard.jpeg"
+  <img
+      src="./thumbnail.jpeg"
       alt="Meridian — analytics dashboard with KPI cards, lead sources chart, revenue flow, and active deals table"
       width="min(920px, 100%)"
     />
-  </a>
 </p>
 
 # Meridian — Analytics Dashboard
