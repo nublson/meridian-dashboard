@@ -116,8 +116,8 @@ export function MetricCards({ dateRange }: { dateRange: DateRangePreset }) {
               <p className="mt-3 text-2xl font-semibold tracking-tight tabular-nums">
                 {display}
               </p>
-              <div className="mt-2 space-y-0.5">
-                <p className="flex flex-wrap items-center gap-1 text-xs font-medium">
+              <div className="mt-2 flex flex-row flex-wrap items-center gap-x-2 gap-y-0.5 text-xs">
+                <p className="flex min-w-0 flex-row flex-wrap items-center gap-1 font-medium">
                   <TrendIcon
                     className={cn(
                       "size-3.5 shrink-0",
@@ -135,7 +135,7 @@ export function MetricCards({ dateRange }: { dateRange: DateRangePreset }) {
                     </span>
                   )}
                 </p>
-                <p className="text-muted-foreground text-xs">vs last month</p>
+                <p className="text-muted-foreground shrink-0">vs last month</p>
               </div>
               {index < metrics.length - 1 && (
                 <div
