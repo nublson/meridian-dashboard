@@ -111,7 +111,16 @@ Other scripts:
 pnpm build    # Production build
 pnpm start    # Serve production build
 pnpm lint     # ESLint
+pnpm test           # Vitest (watch)
+pnpm test:run       # Vitest single run (CI)
+pnpm test:coverage  # Vitest + V8 coverage
 ```
+
+## Testing
+
+Tests use [Vitest](https://vitest.dev/) in the Node environment (see [`vitest.config.ts`](vitest.config.ts)). Spec files are colocated as `*.test.ts` next to the code under test (for example `lib/utils.test.ts`, `app/api/deals/route.test.ts`).
+
+Coverage excludes `components/ui/**` (shadcn primitives are tested upstream). Helpers such as `lib/csv-escape.ts` and `lib/export-url.ts` and App Router `GET` handlers are the main focus.
 
 ---
 
