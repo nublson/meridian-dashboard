@@ -78,14 +78,14 @@ export async function GET(request: Request) {
       status: 200,
       headers: {
         "Content-Type": "text/csv; charset=utf-8",
-        "Content-Disposition": `attachment; filename="cliento-export-${preset}.csv"`,
+        "Content-Disposition": `attachment; filename="meridian-export-${preset}.csv"`,
       },
     });
   }
 
   return NextResponse.json(payload, {
     headers: {
-      "Content-Disposition": `attachment; filename="cliento-export-${preset}.json"`,
+      "Content-Disposition": `attachment; filename="meridian-export-${preset}.json"`,
     },
   });
 }

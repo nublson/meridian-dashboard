@@ -64,7 +64,7 @@ export function ExportReportButton({
               try {
                 await downloadExport(
                   buildExportUrl("csv", dateRange, searchQuery, stages),
-                  `cliento-export-${dateRange}.csv`,
+                  `meridian-export-${dateRange}.csv`,
                 );
                 toast.success("CSV export downloaded");
               } catch {
@@ -79,7 +79,7 @@ export function ExportReportButton({
               try {
                 await downloadExport(
                   buildExportUrl("json", dateRange, searchQuery, stages),
-                  `cliento-export-${dateRange}.json`,
+                  `meridian-export-${dateRange}.json`,
                 );
                 toast.success("JSON export downloaded");
               } catch {

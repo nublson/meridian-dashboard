@@ -59,10 +59,10 @@ export function AppSidebar() {
       <SidebarHeader className="flex flex-col gap-3 border-b border-sidebar-border p-3">
         <div className="flex items-center gap-2 px-1">
           <div className="bg-primary text-primary-foreground flex size-8 items-center justify-center rounded-lg text-sm font-bold">
-            C
+            M
           </div>
           <span className="truncate text-base font-semibold tracking-tight">
-            Cliento
+            Meridian
           </span>
         </div>
       </SidebarHeader>
