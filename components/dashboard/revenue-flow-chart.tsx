@@ -8,9 +8,16 @@ import {
   XAxis,
   YAxis,
 } from "recharts";
+import {
+  ChevronLeft,
+  ChevronRight,
+  MoreHorizontal,
+  Trophy,
+} from "lucide-react";
 import { useRevenue } from "@/lib/hooks/use-revenue";
 import type { DateRangePreset } from "@/lib/types";
-import { formatCompactCurrency } from "@/lib/utils";
+import { formatCurrency, cn } from "@/lib/utils";
+import { Button } from "@/components/ui/button";
 import {
   Card,
   CardContent,
@@ -24,8 +31,14 @@ import {
   ChartTooltipContent,
   type ChartConfig,
 } from "@/components/ui/chart";
+import {
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuItem,
+  DropdownMenuTrigger,
+} from "@/components/ui/dropdown-menu";
 import { Skeleton } from "@/components/ui/skeleton";
-import { cn } from "@/lib/utils";
+import { toast } from "sonner";
 
 const chartConfig = {
   thisYear: {
@@ -54,7 +67,7 @@ export function RevenueFlowChart({ dateRange }: { dateRange: DateRangePreset }) 
     return (
       <Card>
         <CardHeader>
-          <CardTitle>Revenue flow</CardTitle>
+          <CardTitle>Revenue Flow</CardTitle>
           <CardDescription>Could not load revenue data.</CardDescription>
         </CardHeader>
       </Card>
@@ -75,59 +88,153 @@ export function RevenueFlowChart({ dateRange }: { dateRange: DateRangePreset }) 
     );
   }
 
+  const lastSixMonthsTotal = data.months.reduce((a, m) => a + m.thisYear, 0);
+
   const insights = [
     {
       title: "Total revenue (range)",
-      body: formatCompactCurrency(data.totalRevenue),
+      body: `You generated ${formatCurrency(data.totalRevenue)} over the selected period.`,
     },
     {
       title: "Best performing month",
-      body: `${data.bestMonth} · ${formatCompactCurrency(data.bestMonthAmount)}`,
+      body: `${data.bestMonth} is the highest revenue for the last 6 months with ${formatCurrency(data.bestMonthAmount)}.`,
     },
     {
       title: "Last 6 months",
-      body: "Compare this year vs previous year by month.",
+      body: "Compare this year vs previous year by month in the chart below.",
     },
   ];
   const active = insights[insightIndex] ?? insights[0];
 
   return (
     <Card className="flex flex-col">
-      <CardHeader className="flex flex-col gap-2">
-        <div className="flex flex-col gap-1 sm:flex-row sm:items-start sm:justify-between">
-          <div className="flex flex-col gap-1">
-            <CardTitle>Revenue flow</CardTitle>
-            <CardDescription>
-              Total revenue (last 6 months):{" "}
-              {formatCompactCurrency(
-                data.months.reduce((a, m) => a + m.thisYear, 0),
-              )}
-            </CardDescription>
+      <CardHeader className="flex flex-row flex-wrap items-start justify-between gap-3 space-y-0 pb-2">
+        <CardTitle className="text-base font-semibold">Revenue Flow</CardTitle>
+        <div className="flex flex-wrap items-center gap-3 md:gap-4">
+          <div className="text-muted-foreground flex items-center gap-4 text-xs font-medium">
+            <span className="flex items-center gap-1.5">
+              <span
+                className="size-2 shrink-0 rounded-full"
+                style={{ backgroundColor: "var(--chart-3)" }}
+                aria-hidden
+              />
+              This Year
+            </span>
+            <span className="flex items-center gap-1.5">
+              <span
+                className="size-2 shrink-0 rounded-full"
+                style={{ backgroundColor: "var(--chart-4)" }}
+                aria-hidden
+              />
+              Prev Year
+            </span>
           </div>
-          <div className="bg-muted/50 border-border flex max-w-sm flex-col gap-1 rounded-lg border p-3 text-sm">
+          <DropdownMenu>
+            <DropdownMenuTrigger
+              render={
+                <Button
+                  variant="ghost"
+                  size="icon-sm"
+                  className="text-muted-foreground size-8"
+                  aria-label="Revenue chart options"
+                >
+                  <MoreHorizontal className="size-4" />
+                </Button>
+              }
+            />
+            <DropdownMenuContent align="end" className="w-44">
+              <DropdownMenuItem
+                onSelect={() =>
+                  toast.message("Chart options", {
+                    description: "This is a demo dashboard.",
+                  })
+                }
+              >
+                View details
+              </DropdownMenuItem>
+              <DropdownMenuItem
+                onSelect={() =>
+                  toast.message("Export", {
+                    description: "Use Export in the header for full reports.",
+                  })
+                }
+              >
+                Export chart
+              </DropdownMenuItem>
+            </DropdownMenuContent>
+          </DropdownMenu>
+        </div>
+      </CardHeader>
+      <CardContent className="flex flex-col gap-4 pt-0">
+        <div>
+          <p className="text-2xl font-bold tracking-tight tabular-nums">
+            {formatCurrency(lastSixMonthsTotal)}
+          </p>
+          <CardDescription className="mt-1">
+            Total Revenue (Last 6 Months)
+          </CardDescription>
+        </div>
+
+        <div className="bg-muted/50 border-border flex gap-3 rounded-lg border p-3">
+          <Trophy
+            className="text-primary mt-0.5 size-5 shrink-0"
+            aria-hidden
+          />
+          <div className="min-w-0 flex-1">
             <p className="text-muted-foreground text-xs font-medium uppercase tracking-wide">
               {active.title}
             </p>
-            <p className="font-semibold">{active.body}</p>
-            <div className="mt-1 flex gap-1.5">
-              {insights.map((_, i) => (
-                <button
-                  key={i}
-                  type="button"
-                  className={cn(
-                    "size-2 rounded-full transition-colors",
-                    i === insightIndex ? "bg-primary" : "bg-muted hover:bg-muted-foreground/40",
-                  )}
-                  aria-label={`Insight ${i + 1}`}
-                  aria-current={i === insightIndex}
-                  onClick={() => setInsightIndex(i)}
-                />
-              ))}
+            <p className="mt-1 text-sm font-semibold leading-snug">
+              {active.body}
+            </p>
+            <div className="mt-3 flex items-center justify-between gap-2">
+              <Button
+                type="button"
+                variant="ghost"
+                size="icon-sm"
+                className="size-8 shrink-0"
+                aria-label="Previous insight"
+                onClick={() =>
+                  setInsightIndex(
+                    (i) => (i - 1 + insights.length) % insights.length,
+                  )
+                }
+              >
+                <ChevronLeft className="size-4" />
+              </Button>
+              <div className="flex flex-1 justify-center gap-1.5">
+                {insights.map((_, i) => (
+                  <button
+                    key={i}
+                    type="button"
+                    className={cn(
+                      "size-2 rounded-full transition-colors",
+                      i === insightIndex
+                        ? "bg-primary"
+                        : "bg-muted hover:bg-muted-foreground/40",
+                    )}
+                    aria-label={`Insight ${i + 1}`}
+                    aria-current={i === insightIndex}
+                    onClick={() => setInsightIndex(i)}
+                  />
+                ))}
+              </div>
+              <Button
+                type="button"
+                variant="ghost"
+                size="icon-sm"
+                className="size-8 shrink-0"
+                aria-label="Next insight"
+                onClick={() =>
+                  setInsightIndex((i) => (i + 1) % insights.length)
+                }
+              >
+                <ChevronRight className="size-4" />
+              </Button>
             </div>
           </div>
         </div>
-      </CardHeader>
-      <CardContent className="pt-0">
+
         <ChartContainer config={chartConfig} className="aspect-video w-full">
           <BarChart
             data={data.months}
