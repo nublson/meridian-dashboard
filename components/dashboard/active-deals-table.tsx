@@ -98,7 +98,7 @@ export function ActiveDealsTable({
     onExportContextChange?.({ q: debouncedQ, stages });
   }, [debouncedQ, stages, onExportContextChange]);
 
-  const { data, isPending, isError } = useDeals({
+  const { data, isError } = useDeals({
     dateRange,
     q: debouncedQ,
     stages: stages.length ? stages : undefined,
@@ -209,13 +209,13 @@ export function ActiveDealsTable({
                   Failed to load deals.
                 </TableCell>
               </TableRow>
-            ) : isPending ? (
+            ) : !data ? (
               <TableRow>
                 <TableCell colSpan={8} className="text-muted-foreground h-24 text-center">
                   Loading deals…
                 </TableCell>
               </TableRow>
-            ) : !data?.deals.length ? (
+            ) : !data.deals.length ? (
               <TableRow>
                 <TableCell colSpan={8} className="text-muted-foreground h-24 text-center">
                   No deals match your filters.

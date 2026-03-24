@@ -46,7 +46,7 @@ export function LeadSourcesChart({
 }: {
   dateRange: DateRangePreset;
 }) {
-  const { data, isPending, isError } = useLeadSources(dateRange);
+  const { data, isError } = useLeadSources(dateRange);
 
   const chartData = React.useMemo(() => {
     if (!data) return [];
@@ -79,7 +79,7 @@ export function LeadSourcesChart({
     );
   }
 
-  if (isPending || !data) {
+  if (!data) {
     return (
       <Card className="lg:h-full">
         <CardHeader>

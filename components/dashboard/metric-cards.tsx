@@ -54,7 +54,7 @@ export function MetricCards({ dateRange }: { dateRange: DateRangePreset }) {
   const [hydrated, setHydrated] = React.useState(false);
   React.useEffect(() => setHydrated(true), []);
 
-  const { data, isPending, isError } = useMetrics(dateRange);
+  const { data, isError } = useMetrics(dateRange);
 
   if (!hydrated) {
     return <MetricCardsSkeleton />;
@@ -68,7 +68,7 @@ export function MetricCards({ dateRange }: { dateRange: DateRangePreset }) {
     );
   }
 
-  if (isPending || !data) {
+  if (!data) {
     return <MetricCardsSkeleton />;
   }
 
