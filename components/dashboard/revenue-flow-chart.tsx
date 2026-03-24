@@ -65,7 +65,7 @@ export function RevenueFlowChart({ dateRange }: { dateRange: DateRangePreset }) 
 
   if (isError) {
     return (
-      <Card>
+      <Card className="min-w-0 flex-1">
         <CardHeader>
           <CardTitle>Revenue Flow</CardTitle>
           <CardDescription>Could not load revenue data.</CardDescription>
@@ -76,7 +76,7 @@ export function RevenueFlowChart({ dateRange }: { dateRange: DateRangePreset }) 
 
   if (isPending || !data) {
     return (
-      <Card>
+      <Card className="min-w-0 flex-1">
         <CardHeader>
           <Skeleton className="h-5 w-48" />
           <Skeleton className="h-4 w-64" />
@@ -107,7 +107,7 @@ export function RevenueFlowChart({ dateRange }: { dateRange: DateRangePreset }) 
   const active = insights[insightIndex] ?? insights[0];
 
   return (
-    <Card className="flex flex-col">
+    <Card className="flex min-w-0 flex-1 flex-col">
       <CardHeader className="flex flex-row flex-wrap items-start justify-between gap-3 space-y-0 pb-2">
         <CardTitle className="text-base font-semibold">Revenue Flow</CardTitle>
         <div className="flex flex-wrap items-center gap-3 md:gap-4">
@@ -166,108 +166,114 @@ export function RevenueFlowChart({ dateRange }: { dateRange: DateRangePreset }) 
         </div>
       </CardHeader>
       <CardContent className="flex flex-col gap-4 pt-0">
-        <div>
-          <p className="text-2xl font-bold tracking-tight tabular-nums">
-            {formatCurrency(lastSixMonthsTotal)}
-          </p>
-          <CardDescription className="mt-1">
-            Total Revenue (Last 6 Months)
-          </CardDescription>
-        </div>
+        <div className="flex flex-col gap-4 xl:flex-row xl:gap-6">
+          <div className="flex w-full flex-col gap-4 xl:w-[410px] xl:shrink-0">
+            <div>
+              <p className="text-2xl font-bold tracking-tight tabular-nums">
+                {formatCurrency(lastSixMonthsTotal)}
+              </p>
+              <CardDescription className="mt-1">
+                Total Revenue (Last 6 Months)
+              </CardDescription>
+            </div>
 
-        <div className="bg-muted/50 border-border flex gap-3 rounded-lg border p-3">
-          <Trophy
-            className="text-primary mt-0.5 size-5 shrink-0"
-            aria-hidden
-          />
-          <div className="min-w-0 flex-1">
-            <p className="text-muted-foreground text-xs font-medium uppercase tracking-wide">
-              {active.title}
-            </p>
-            <p className="mt-1 text-sm font-semibold leading-snug">
-              {active.body}
-            </p>
-            <div className="mt-3 flex items-center justify-between gap-2">
-              <Button
-                type="button"
-                variant="ghost"
-                size="icon-sm"
-                className="size-8 shrink-0"
-                aria-label="Previous insight"
-                onClick={() =>
-                  setInsightIndex(
-                    (i) => (i - 1 + insights.length) % insights.length,
-                  )
-                }
-              >
-                <ChevronLeft className="size-4" />
-              </Button>
-              <div className="flex flex-1 justify-center gap-1.5">
-                {insights.map((_, i) => (
-                  <button
-                    key={i}
+            <div className="bg-muted/50 border-border flex gap-3 rounded-lg border p-3">
+              <Trophy
+                className="text-primary mt-0.5 size-5 shrink-0"
+                aria-hidden
+              />
+              <div className="min-w-0 flex-1">
+                <p className="text-muted-foreground text-xs font-medium uppercase tracking-wide">
+                  {active.title}
+                </p>
+                <p className="mt-1 text-sm font-semibold leading-snug">
+                  {active.body}
+                </p>
+                <div className="mt-3 flex items-center justify-between gap-2">
+                  <Button
                     type="button"
-                    className={cn(
-                      "size-2 rounded-full transition-colors",
-                      i === insightIndex
-                        ? "bg-primary"
-                        : "bg-muted hover:bg-muted-foreground/40",
-                    )}
-                    aria-label={`Insight ${i + 1}`}
-                    aria-current={i === insightIndex}
-                    onClick={() => setInsightIndex(i)}
-                  />
-                ))}
+                    variant="ghost"
+                    size="icon-sm"
+                    className="size-8 shrink-0"
+                    aria-label="Previous insight"
+                    onClick={() =>
+                      setInsightIndex(
+                        (i) => (i - 1 + insights.length) % insights.length,
+                      )
+                    }
+                  >
+                    <ChevronLeft className="size-4" />
+                  </Button>
+                  <div className="flex flex-1 justify-center gap-1.5">
+                    {insights.map((_, i) => (
+                      <button
+                        key={i}
+                        type="button"
+                        className={cn(
+                          "size-2 rounded-full transition-colors",
+                          i === insightIndex
+                            ? "bg-primary"
+                            : "bg-muted hover:bg-muted-foreground/40",
+                        )}
+                        aria-label={`Insight ${i + 1}`}
+                        aria-current={i === insightIndex}
+                        onClick={() => setInsightIndex(i)}
+                      />
+                    ))}
+                  </div>
+                  <Button
+                    type="button"
+                    variant="ghost"
+                    size="icon-sm"
+                    className="size-8 shrink-0"
+                    aria-label="Next insight"
+                    onClick={() =>
+                      setInsightIndex((i) => (i + 1) % insights.length)
+                    }
+                  >
+                    <ChevronRight className="size-4" />
+                  </Button>
+                </div>
               </div>
-              <Button
-                type="button"
-                variant="ghost"
-                size="icon-sm"
-                className="size-8 shrink-0"
-                aria-label="Next insight"
-                onClick={() =>
-                  setInsightIndex((i) => (i + 1) % insights.length)
-                }
-              >
-                <ChevronRight className="size-4" />
-              </Button>
             </div>
           </div>
-        </div>
 
-        <ChartContainer config={chartConfig} className="aspect-video w-full">
-          <BarChart
-            data={data.months}
-            margin={{ left: 4, right: 8, top: 8, bottom: 4 }}
-          >
-            <CartesianGrid vertical={false} strokeDasharray="3 3" />
-            <XAxis
-              dataKey="month"
-              tickLine={false}
-              axisLine={false}
-              tickMargin={8}
-            />
-            <YAxis
-              tickLine={false}
-              axisLine={false}
-              tickMargin={8}
-              tickFormatter={(v) => `$${Number(v) / 1000}k`}
-            />
-            <ChartTooltip content={<ChartTooltipContent />} />
-            <Bar
-              dataKey="thisYear"
-              fill="var(--color-thisYear)"
-              radius={[4, 4, 0, 0]}
-              maxBarSize={28}
-            />
-            <Bar
-              dataKey="prevYear"
-              fill="var(--color-prevYear)"
-              radius={[4, 4, 0, 0]}
-              maxBarSize={28}
-            />
-          </BarChart>
-        </ChartContainer>
+          <div className="min-w-0 flex-1">
+            <ChartContainer config={chartConfig} className="aspect-video w-full">
+              <BarChart
+                data={data.months}
+                margin={{ left: 4, right: 8, top: 8, bottom: 4 }}
+              >
+                <CartesianGrid vertical={false} strokeDasharray="3 3" />
+                <XAxis
+                  dataKey="month"
+                  tickLine={false}
+                  axisLine={false}
+                  tickMargin={8}
+                />
+                <YAxis
+                  tickLine={false}
+                  axisLine={false}
+                  tickMargin={8}
+                  tickFormatter={(v) => `$${Number(v) / 1000}k`}
+                />
+                <ChartTooltip content={<ChartTooltipContent />} />
+                <Bar
+                  dataKey="thisYear"
+                  fill="var(--color-thisYear)"
+                  radius={[4, 4, 0, 0]}
+                  maxBarSize={28}
+                />
+                <Bar
+                  dataKey="prevYear"
+                  fill="var(--color-prevYear)"
+                  radius={[4, 4, 0, 0]}
+                  maxBarSize={28}
+                />
+              </BarChart>
+            </ChartContainer>
+          </div>
+        </div>
       </CardContent>
     </Card>
   );
