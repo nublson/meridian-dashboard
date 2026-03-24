@@ -34,7 +34,12 @@ export function WelcomeSection({
           searchQuery={exportQuery}
           stages={exportStages}
         />
-        <Button size="sm">
+        <Button
+          type="button"
+          size="sm"
+          disabled
+          title="Not available in this demo"
+        >
           <Plus data-icon="inline-start" />
           New
         </Button>

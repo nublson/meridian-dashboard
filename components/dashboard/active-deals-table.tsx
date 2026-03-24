@@ -10,15 +10,6 @@ import { Avatar, AvatarFallback } from "@/components/ui/avatar";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Checkbox } from "@/components/ui/checkbox";
-import {
-  DropdownMenu,
-  DropdownMenuContent,
-  DropdownMenuGroup,
-  DropdownMenuItem,
-  DropdownMenuLabel,
-  DropdownMenuSeparator,
-  DropdownMenuTrigger,
-} from "@/components/ui/dropdown-menu";
 import { Input } from "@/components/ui/input";
 import {
   Pagination,
@@ -181,7 +172,13 @@ export function ActiveDealsTable({
               </div>
             </PopoverContent>
           </Popover>
-          <Button variant="outline" size="sm" type="button">
+          <Button
+            variant="outline"
+            size="sm"
+            type="button"
+            disabled
+            title="Not available in this demo"
+          >
             <Upload data-icon="inline-start" />
             Import
           </Button>
@@ -263,29 +260,17 @@ export function ActiveDealsTable({
                     {format(new Date(deal.expectedClose), "MMM d, yyyy")}
                   </TableCell>
                   <TableCell className="text-right">
-                    <DropdownMenu>
-                      <DropdownMenuTrigger
-                        render={
-                          <Button
-                            variant="ghost"
-                            size="icon"
-                            className="size-8"
-                            aria-label="Row actions"
-                          />
-                        }
-                      >
-                        <MoreHorizontal />
-                      </DropdownMenuTrigger>
-                      <DropdownMenuContent align="end">
-                        <DropdownMenuLabel>Actions</DropdownMenuLabel>
-                        <DropdownMenuSeparator />
-                        <DropdownMenuGroup>
-                          <DropdownMenuItem>View deal</DropdownMenuItem>
-                          <DropdownMenuItem>Edit stage</DropdownMenuItem>
-                          <DropdownMenuItem>Assign owner</DropdownMenuItem>
-                        </DropdownMenuGroup>
-                      </DropdownMenuContent>
-                    </DropdownMenu>
+                    <Button
+                      type="button"
+                      variant="ghost"
+                      size="icon"
+                      className="size-8"
+                      disabled
+                      aria-label="Row actions (not available in this demo)"
+                      title="Not available in this demo"
+                    >
+                      <MoreHorizontal />
+                    </Button>
                   </TableCell>
                 </TableRow>
               ))
