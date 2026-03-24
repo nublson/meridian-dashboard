@@ -22,7 +22,7 @@ const METRIC_ICONS: Record<string, LucideIcon> = {
   conversion: MessageCircle,
 };
 
-function MetricCardsSkeleton() {
+export function MetricCardsSkeleton() {
   return (
     <div className="bg-card rounded-xl border">
       <div className="flex flex-col gap-0 lg:flex-row">
