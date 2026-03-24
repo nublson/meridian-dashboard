@@ -80,10 +80,9 @@ export function MetricCards({ dateRange }: { dateRange: DateRangePreset }) {
             m.id === "product-revenue"
               ? formatCurrency(Math.abs(m.changeAbsolute))
               : Math.abs(m.changeAbsolute).toLocaleString();
-          const changeLabel =
-            m.suffix === "%"
-              ? `${m.changePercent > 0 ? "+" : ""}${m.changePercent}% vs last month`
-              : `${m.changePercent > 0 ? "+" : ""}${m.changePercent}% (${m.changeAbsolute >= 0 ? "+" : "-"}${absPart}) vs last month`;
+          const percentStr = `${m.changePercent > 0 ? "+" : ""}${m.changePercent}%`;
+          const absParen =
+            m.suffix === "%" ? null : `(${absPart})`;
 
           return (
             <div
@@ -102,18 +101,30 @@ export function MetricCards({ dateRange }: { dateRange: DateRangePreset }) {
                   {m.label}
                 </p>
               </div>
-              <p className="mt-4 text-2xl font-semibold tracking-tight tabular-nums">
+              <p className="mt-3 text-2xl font-semibold tracking-tight tabular-nums">
                 {display}
               </p>
-              <p
-                className={cn(
-                  "mt-2 flex items-center gap-1 text-xs font-medium",
-                  isUp ? "text-success" : "text-destructive",
-                )}
-              >
-                <TrendIcon className="size-3.5 shrink-0" />
-                {changeLabel}
-              </p>
+              <div className="mt-2 space-y-0.5">
+                <p className="flex flex-wrap items-center gap-1 text-xs font-medium">
+                  <TrendIcon
+                    className={cn(
+                      "size-3.5 shrink-0",
+                      isUp ? "text-success" : "text-destructive",
+                    )}
+                  />
+                  <span
+                    className={isUp ? "text-success" : "text-destructive"}
+                  >
+                    {percentStr}
+                  </span>
+                  {absParen !== null && (
+                    <span className="text-muted-foreground font-normal">
+                      {absParen}
+                    </span>
+                  )}
+                </p>
+                <p className="text-muted-foreground text-xs">vs last month</p>
+              </div>
               {index < metrics.length - 1 && (
                 <div
                   className="bg-border absolute right-0 bottom-0 left-0 h-px xl:top-4 xl:right-0 xl:bottom-4 xl:left-auto xl:h-auto xl:w-px"
