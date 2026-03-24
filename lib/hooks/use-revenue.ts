@@ -1,6 +1,6 @@
 "use client";
 
-import { useQuery } from "@tanstack/react-query";
+import { keepPreviousData, useQuery } from "@tanstack/react-query";
 import type { DateRangePreset, RevenueResponse } from "@/lib/types";
 
 async function fetchRevenue(dateRange: DateRangePreset): Promise<RevenueResponse> {
@@ -14,6 +14,6 @@ export function useRevenue(dateRange: DateRangePreset) {
     queryKey: ["revenue", dateRange],
     queryFn: () => fetchRevenue(dateRange),
     staleTime: 60_000,
-    placeholderData: (previousData) => previousData,
+    placeholderData: keepPreviousData,
   });
 }

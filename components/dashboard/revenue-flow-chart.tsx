@@ -4,6 +4,7 @@ import * as React from "react";
 import { Bar, BarChart, CartesianGrid, XAxis, YAxis } from "recharts";
 import { ChevronLeft, ChevronRight, MoreHorizontal } from "lucide-react";
 import { useRevenue } from "@/lib/hooks/use-revenue";
+import { DATE_RANGE_LABELS } from "@/lib/date-range-labels";
 import type { DateRangePreset } from "@/lib/types";
 import { formatCurrency, cn } from "@/lib/utils";
 import { Button } from "@/components/ui/button";
@@ -46,11 +47,14 @@ const INSIGHT_COUNT = 4;
 const INSIGHT_CARD_W_CLASS = "w-full lg:w-[220px] min-w-[220px]";
 const INSIGHT_CARD_H_CLASS = "h-[137px]";
 
-function buildInsightDescriptions(data: {
-  months: { month: string; thisYear: number; prevYear: number }[];
-  bestMonth: string;
-  bestMonthAmount: number;
-}): string[] {
+function buildInsightDescriptions(
+  data: {
+    months: { month: string; thisYear: number; prevYear: number }[];
+    bestMonth: string;
+    bestMonthAmount: number;
+  },
+  periodLabel: string,
+): string[] {
   const { months, bestMonth, bestMonthAmount } = data;
 
   let topGrowthMonth = months[0];
@@ -68,24 +72,24 @@ function buildInsightDescriptions(data: {
       ? Math.round(topGrowthRatio * 100)
       : 0;
 
-  const q1This = months.slice(0, 3).reduce((a, m) => a + m.thisYear, 0);
-  const q1Prev = months.slice(0, 3).reduce((a, m) => a + m.prevYear, 0);
-  const q1DeltaPct =
-    q1Prev > 0 ? Math.round(((q1This - q1Prev) / q1Prev) * 100) : 0;
-  const q1Trend =
-    q1DeltaPct === 0
+  const sumThis = months.reduce((a, m) => a + m.thisYear, 0);
+  const sumPrev = months.reduce((a, m) => a + m.prevYear, 0);
+  const periodDeltaPct =
+    sumPrev > 0 ? Math.round(((sumThis - sumPrev) / sumPrev) * 100) : 0;
+  const periodTrend =
+    periodDeltaPct === 0
       ? "flat year over year"
-      : q1DeltaPct > 0
-        ? `up ${q1DeltaPct}% year over year`
-        : `down ${Math.abs(q1DeltaPct)}% year over year`;
+      : periodDeltaPct > 0
+        ? `up ${periodDeltaPct}% year over year`
+        : `down ${Math.abs(periodDeltaPct)}% year over year`;
 
   return [
-    `${bestMonth} is the highest revenue for the last 6 months with ${formatCurrency(bestMonthAmount)}.`,
+    `${bestMonth} led revenue at ${formatCurrency(bestMonthAmount)} for ${periodLabel}.`,
     growthPct > 0
       ? `${topGrowthMonth.month} shows strong growth compared to previous year — ${growthPct}% YoY.`
       : `${topGrowthMonth.month} leads recent momentum compared to previous year.`,
     "Consistent revenue increase throughout the period.",
-    `Q1 total: ${formatCurrency(q1This)} — ${q1Trend}.`,
+    `Period total: ${formatCurrency(sumThis)} — ${periodTrend}.`,
   ];
 }
 
@@ -94,12 +98,26 @@ export function RevenueFlowChart({
 }: {
   dateRange: DateRangePreset;
 }) {
-  const { data, isError } = useRevenue(dateRange);
+  const { data, isError, isPlaceholderData } = useRevenue(dateRange);
   const [insightIndex, setInsightIndex] = React.useState(0);
+  const [committedRange, setCommittedRange] =
+    React.useState<DateRangePreset>(dateRange);
+
+  React.useLayoutEffect(() => {
+    if (!isPlaceholderData && data !== undefined) {
+      setCommittedRange(dateRange);
+    }
+  }, [isPlaceholderData, data, dateRange]);
+
+  /** Matches copy and totals to the series on screen (avoids label/chart mismatch while refetching). */
+  const displayRange = isPlaceholderData ? committedRange : dateRange;
 
   const insightDescriptions = React.useMemo(
-    () => (data ? buildInsightDescriptions(data) : []),
-    [data],
+    () =>
+      data
+        ? buildInsightDescriptions(data, DATE_RANGE_LABELS[displayRange])
+        : [],
+    [data, displayRange],
   );
 
   React.useEffect(() => {
@@ -129,13 +147,13 @@ export function RevenueFlowChart({
           <Skeleton className="h-4 w-64" />
         </CardHeader>
         <CardContent>
-          <Skeleton className="aspect-video w-full rounded-lg" />
+          <Skeleton className="h-56 w-full shrink-0 rounded-lg sm:h-60 lg:h-64" />
         </CardContent>
       </Card>
     );
   }
 
-  const lastSixMonthsTotal = data.months.reduce((a, m) => a + m.thisYear, 0);
+  const periodTotal = data.months.reduce((a, m) => a + m.thisYear, 0);
 
   const activeDescription =
     insightDescriptions[insightIndex] ?? insightDescriptions[0] ?? "";
@@ -209,10 +227,10 @@ export function RevenueFlowChart({
           >
             <div>
               <p className="text-xl font-bold tracking-tight tabular-nums">
-                {formatCurrency(lastSixMonthsTotal)}
+                {formatCurrency(periodTotal)}
               </p>
               <CardDescription className="mt-0.5 text-xs">
-                Total Revenue (Last 6 Months)
+                Total revenue — {DATE_RANGE_LABELS[displayRange]}
               </CardDescription>
             </div>
 
