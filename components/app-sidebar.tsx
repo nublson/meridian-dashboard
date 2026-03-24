@@ -55,7 +55,7 @@ export function AppSidebar() {
   const pathname = usePathname();
 
   return (
-    <Sidebar className="h-full" collapsible="icon">
+    <Sidebar className="h-full" collapsible="offcanvas">
       <SidebarHeader className="flex flex-col gap-3 border-b border-sidebar-border p-3">
         <div className="flex items-center gap-2 px-1">
           <div className="bg-primary text-primary-foreground flex size-8 items-center justify-center rounded-lg text-sm font-bold">
