@@ -53,7 +53,7 @@ export function DashboardView() {
         exportStages={exportCtx.stages}
       />
       <MetricCards dateRange={dateRange} />
-      <div className="grid gap-4 lg:grid-cols-2">
+      <div className="flex flex-col gap-4 sm:gap-6 xl:flex-row">
         <LeadSourcesChart dateRange={dateRange} />
         <RevenueFlowChart dateRange={dateRange} />
       </div>
