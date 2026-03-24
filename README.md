@@ -20,6 +20,18 @@ You can start editing the page by modifying `app/page.tsx`. The page auto-update
 
 This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
 
+## Testing
+
+Tests use [Vitest](https://vitest.dev/) in the Node environment (see [`vitest.config.ts`](vitest.config.ts)). Spec files are colocated as `*.test.ts` next to the code under test (for example `lib/utils.test.ts`, `app/api/deals/route.test.ts`).
+
+```bash
+pnpm test           # watch mode
+pnpm test:run       # single run (CI)
+pnpm test:coverage  # single run + V8 coverage report
+```
+
+Coverage excludes `components/ui/**` (shadcn primitives are tested upstream). Helpers such as `lib/csv-escape.ts` and `lib/export-url.ts` and App Router `GET` handlers are the main focus.
+
 ## Learn More
 
 To learn more about Next.js, take a look at the following resources:
