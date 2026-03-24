@@ -16,5 +16,6 @@ export function useLeadSources(dateRange: DateRangePreset) {
     queryKey: ["lead-sources", dateRange],
     queryFn: () => fetchLeadSources(dateRange),
     staleTime: 60_000,
+    placeholderData: (previousData) => previousData,
   });
 }

@@ -14,5 +14,6 @@ export function useRevenue(dateRange: DateRangePreset) {
     queryKey: ["revenue", dateRange],
     queryFn: () => fetchRevenue(dateRange),
     staleTime: 60_000,
+    placeholderData: (previousData) => previousData,
   });
 }

@@ -94,7 +94,7 @@ export function RevenueFlowChart({
 }: {
   dateRange: DateRangePreset;
 }) {
-  const { data, isPending, isError } = useRevenue(dateRange);
+  const { data, isError } = useRevenue(dateRange);
   const [insightIndex, setInsightIndex] = React.useState(0);
 
   const insightDescriptions = React.useMemo(
@@ -121,7 +121,7 @@ export function RevenueFlowChart({
     );
   }
 
-  if (isPending || !data) {
+  if (!data) {
     return (
       <Card className="min-w-0 flex-1 lg:h-full">
         <CardHeader>
