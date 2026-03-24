@@ -65,10 +65,6 @@ export function AppSidebar() {
             Cliento
           </span>
         </div>
-        <div className="bg-sidebar-accent/40 flex flex-col gap-0.5 rounded-lg border border-sidebar-border p-3">
-          <p className="text-sm font-medium">Synclead</p>
-          <p className="text-muted-foreground text-xs">16 Members</p>
-        </div>
       </SidebarHeader>
 
       <SidebarContent className="flex flex-col gap-1 px-2 py-3">
