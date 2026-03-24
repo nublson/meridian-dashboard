@@ -33,7 +33,7 @@ import {
   SidebarMenuItem,
   SidebarSeparator,
 } from "@/components/ui/sidebar";
-import { Avatar, AvatarFallback } from "@/components/ui/avatar";
+import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 
 const mainNav = [
   { title: "AI Assistant", href: "/dashboard", icon: Sparkles, accent: true },
@@ -147,20 +147,24 @@ export function AppSidebar() {
         </SidebarMenu>
         <SidebarMenu>
           <SidebarMenuItem>
-            <SidebarMenuButton render={<Link href="https://example.com" />}>
+            <SidebarMenuButton render={<Link href="https://nublson.com" />}>
               <Globe />
-              <span className="truncate">square.indev.me</span>
+              <span className="truncate">nublson.com</span>
             </SidebarMenuButton>
           </SidebarMenuItem>
         </SidebarMenu>
         <div className="bg-sidebar-accent/30 flex items-center gap-2 rounded-lg p-2">
           <Avatar className="size-9">
-            <AvatarFallback>LN</AvatarFallback>
+            <AvatarImage
+              src="https://avatars.githubusercontent.com/u/46088089?v=4"
+              alt="Nubelson Fernandes"
+            />
+            <AvatarFallback>NF</AvatarFallback>
           </Avatar>
           <div className="flex min-w-0 flex-1 flex-col gap-0.5">
-            <p className="truncate text-sm font-medium">John Doe</p>
+            <p className="truncate text-sm font-medium">Nubelson Fernandes</p>
             <p className="text-muted-foreground truncate text-xs">
-              john@example.com
+              me@nublson.com
             </p>
           </div>
         </div>
