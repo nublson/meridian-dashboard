@@ -34,7 +34,7 @@ export function MetricCards({ dateRange }: { dateRange: DateRangePreset }) {
 
   if (isPending || !data) {
     return (
-      <div className="bg-card rounded-xl border p-4 sm:p-6">
+      <div className="bg-card rounded-xl border">
         <div className="flex flex-col gap-0 xl:flex-row">
           {Array.from({ length: 4 }).map((_, i) => (
             <div
@@ -63,7 +63,7 @@ export function MetricCards({ dateRange }: { dateRange: DateRangePreset }) {
   const metrics = data.metrics;
 
   return (
-    <div className="bg-card rounded-xl border p-4 sm:p-6">
+    <div className="bg-card rounded-xl border">
       <div className="flex flex-col xl:flex-row">
         {metrics.map((m, index) => {
           const MetricIcon = METRIC_ICONS[m.id] ?? Coins;
