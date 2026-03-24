@@ -1,16 +1,27 @@
 "use client";
 
 import * as React from "react";
+import { MoreHorizontal } from "lucide-react";
 import { Pie, PieChart, Cell, Label } from "recharts";
+import { toast } from "sonner";
 import { useLeadSources } from "@/lib/hooks/use-lead-sources";
 import type { DateRangePreset } from "@/lib/types";
+import { Button } from "@/components/ui/button";
 import {
   Card,
+  CardAction,
   CardContent,
   CardDescription,
+  CardFooter,
   CardHeader,
   CardTitle,
 } from "@/components/ui/card";
+import {
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuItem,
+  DropdownMenuTrigger,
+} from "@/components/ui/dropdown-menu";
 import {
   ChartContainer,
   ChartTooltip,
@@ -80,9 +91,47 @@ export function LeadSourcesChart({ dateRange }: { dateRange: DateRangePreset }) 
 
   return (
     <Card className="flex flex-col">
-      <CardHeader className="flex flex-col gap-1">
-        <CardTitle>Lead Sources</CardTitle>
-        <CardDescription>Distribution by channel</CardDescription>
+      <CardHeader>
+        <div className="flex flex-col gap-1">
+          <CardTitle>Lead Sources</CardTitle>
+          <CardDescription>Distribution by channel</CardDescription>
+        </div>
+        <CardAction>
+          <DropdownMenu>
+            <DropdownMenuTrigger
+              render={
+                <Button
+                  variant="ghost"
+                  size="icon-sm"
+                  className="text-muted-foreground size-8"
+                  aria-label="Lead sources chart options"
+                >
+                  <MoreHorizontal className="size-4" />
+                </Button>
+              }
+            />
+            <DropdownMenuContent align="end" className="w-44">
+              <DropdownMenuItem
+                onSelect={() =>
+                  toast.message("Lead sources", {
+                    description: "This is a demo dashboard.",
+                  })
+                }
+              >
+                View details
+              </DropdownMenuItem>
+              <DropdownMenuItem
+                onSelect={() =>
+                  toast.message("Export", {
+                    description: "Use Export in the header for full reports.",
+                  })
+                }
+              >
+                Export chart
+              </DropdownMenuItem>
+            </DropdownMenuContent>
+          </DropdownMenu>
+        </CardAction>
       </CardHeader>
       <CardContent className="flex flex-1 flex-col gap-4 lg:flex-row lg:items-center">
         <ChartContainer
@@ -159,6 +208,9 @@ export function LeadSourcesChart({ dateRange }: { dateRange: DateRangePreset }) 
           ))}
         </ul>
       </CardContent>
+      <CardFooter className="text-muted-foreground border-0 bg-transparent py-3 text-xs">
+        Last 30 days
+      </CardFooter>
     </Card>
   );
 }
