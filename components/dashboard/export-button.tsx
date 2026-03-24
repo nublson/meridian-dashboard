@@ -2,8 +2,9 @@
 
 import { Download } from "lucide-react";
 import { toast } from "sonner";
-import type { DateRangePreset } from "@/lib/types";
+import { buildExportUrl } from "@/lib/export-url";
 import { Button } from "@/components/ui/button";
+import type { DateRangePreset } from "@/lib/types";
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -11,20 +12,6 @@ import {
   DropdownMenuItem,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
-
-function buildExportUrl(
-  format: "csv" | "json",
-  dateRange: DateRangePreset,
-  q?: string,
-  stages?: string[],
-) {
-  const sp = new URLSearchParams();
-  sp.set("format", format);
-  sp.set("dateRange", dateRange);
-  if (q?.trim()) sp.set("q", q.trim());
-  if (stages?.length) sp.set("stages", stages.join(","));
-  return `/api/export?${sp.toString()}`;
-}
 
 async function downloadExport(url: string, filename: string) {
   const res = await fetch(url);
