@@ -43,7 +43,7 @@ const chartConfig = {
 const INSIGHT_TITLE = "Best Performing Month";
 const INSIGHT_COUNT = 4;
 /** Fixed layout so the insight card never shifts with copy or viewport. */
-const INSIGHT_CARD_W_CLASS = "w-[220px] min-w-[220px]";
+const INSIGHT_CARD_W_CLASS = "w-full lg:w-[220px] min-w-[220px]";
 const INSIGHT_CARD_H_CLASS = "h-[137px]";
 
 function buildInsightDescriptions(data: {

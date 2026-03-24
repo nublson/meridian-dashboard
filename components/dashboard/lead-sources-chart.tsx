@@ -41,7 +41,11 @@ function slugSource(source: string) {
   return source.toLowerCase().replace(/\s+/g, "_");
 }
 
-export function LeadSourcesChart({ dateRange }: { dateRange: DateRangePreset }) {
+export function LeadSourcesChart({
+  dateRange,
+}: {
+  dateRange: DateRangePreset;
+}) {
   const { data, isPending, isError } = useLeadSources(dateRange);
 
   const chartData = React.useMemo(() => {
