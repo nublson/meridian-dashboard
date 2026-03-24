@@ -15,5 +15,6 @@ export function useMetrics(dateRange: DateRangePreset) {
     queryFn: () => fetchMetrics(dateRange),
     refetchInterval: 30_000,
     staleTime: 15_000,
+    placeholderData: (previousData) => previousData,
   });
 }
