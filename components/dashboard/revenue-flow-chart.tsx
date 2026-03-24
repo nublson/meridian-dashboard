@@ -65,7 +65,7 @@ export function RevenueFlowChart({ dateRange }: { dateRange: DateRangePreset }) 
 
   if (isError) {
     return (
-      <Card className="min-w-0 flex-1">
+      <Card className="min-w-0 flex-1 lg:h-full">
         <CardHeader>
           <CardTitle>Revenue Flow</CardTitle>
           <CardDescription>Could not load revenue data.</CardDescription>
@@ -76,7 +76,7 @@ export function RevenueFlowChart({ dateRange }: { dateRange: DateRangePreset }) 
 
   if (isPending || !data) {
     return (
-      <Card className="min-w-0 flex-1">
+      <Card className="min-w-0 flex-1 lg:h-full">
         <CardHeader>
           <Skeleton className="h-5 w-48" />
           <Skeleton className="h-4 w-64" />
@@ -107,7 +107,7 @@ export function RevenueFlowChart({ dateRange }: { dateRange: DateRangePreset }) 
   const active = insights[insightIndex] ?? insights[0];
 
   return (
-    <Card className="flex min-w-0 flex-1 flex-col">
+    <Card className="flex min-w-0 flex-1 flex-col lg:h-full">
       <CardHeader className="flex flex-row flex-wrap items-start justify-between gap-3 space-y-0 pb-2">
         <CardTitle className="text-base font-semibold">Revenue Flow</CardTitle>
         <div className="flex flex-wrap items-center gap-3 md:gap-4">
@@ -238,8 +238,11 @@ export function RevenueFlowChart({ dateRange }: { dateRange: DateRangePreset }) 
             </div>
           </div>
 
-          <div className="min-w-0 flex-1">
-            <ChartContainer config={chartConfig} className="aspect-video w-full">
+          <div className="min-h-0 min-w-0 flex-1">
+            <ChartContainer
+              config={chartConfig}
+              className="aspect-auto h-56 w-full sm:h-60 lg:h-64"
+            >
               <BarChart
                 data={data.months}
                 margin={{ left: 4, right: 8, top: 8, bottom: 4 }}

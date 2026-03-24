@@ -66,7 +66,7 @@ export function LeadSourcesChart({ dateRange }: { dateRange: DateRangePreset }) 
 
   if (isError) {
     return (
-      <Card>
+      <Card className="lg:h-full">
         <CardHeader>
           <CardTitle>Lead Sources</CardTitle>
           <CardDescription>Could not load chart data.</CardDescription>
@@ -77,7 +77,7 @@ export function LeadSourcesChart({ dateRange }: { dateRange: DateRangePreset }) 
 
   if (isPending || !data) {
     return (
-      <Card>
+      <Card className="lg:h-full">
         <CardHeader>
           <Skeleton className="h-5 w-40" />
           <Skeleton className="h-4 w-56" />
@@ -90,7 +90,7 @@ export function LeadSourcesChart({ dateRange }: { dateRange: DateRangePreset }) 
   }
 
   return (
-    <Card className="flex w-full flex-col lg:w-[410px]">
+    <Card className="flex w-full flex-col lg:h-full lg:w-[410px]">
       <CardHeader>
         <div className="flex flex-col gap-1">
           <CardTitle>Lead Sources</CardTitle>
