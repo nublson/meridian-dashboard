@@ -39,19 +39,11 @@ export async function GET(request: Request) {
     rows = rows.filter((d) => stages.includes(d.stage));
   }
 
-  const sortBy = searchParams.get("sortBy") ?? "expectedClose";
-  const sortDir = searchParams.get("sortDir") === "asc" ? "asc" : "desc";
-  rows = [...rows].sort((a, b) => {
-    let cmp = 0;
-    if (sortBy === "value") {
-      cmp = a.value - b.value;
-    } else {
-      cmp =
-        new Date(a.expectedClose).getTime() -
-        new Date(b.expectedClose).getTime();
-    }
-    return sortDir === "asc" ? cmp : -cmp;
-  });
+  rows = [...rows].sort(
+    (a, b) =>
+      new Date(a.expectedClose).getTime() -
+      new Date(b.expectedClose).getTime(),
+  );
 
   const page = Math.max(1, Number(searchParams.get("page")) || 1);
   const pageSize = Math.min(

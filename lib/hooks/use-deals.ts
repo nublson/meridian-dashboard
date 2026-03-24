@@ -9,8 +9,6 @@ export interface DealsQueryParams {
   stages?: string[];
   page: number;
   pageSize: number;
-  sortBy: "value" | "expectedClose";
-  sortDir: "asc" | "desc";
 }
 
 function buildDealsUrl(p: DealsQueryParams): string {
@@ -20,8 +18,6 @@ function buildDealsUrl(p: DealsQueryParams): string {
   if (p.stages?.length) sp.set("stages", p.stages.join(","));
   sp.set("page", String(p.page));
   sp.set("pageSize", String(p.pageSize));
-  sp.set("sortBy", p.sortBy);
-  sp.set("sortDir", p.sortDir);
   return `/api/deals?${sp.toString()}`;
 }
 
@@ -40,8 +36,6 @@ export function useDeals(params: DealsQueryParams) {
       (params.stages ?? []).slice().sort().join("|"),
       params.page,
       params.pageSize,
-      params.sortBy,
-      params.sortDir,
     ],
     queryFn: () => fetchDeals(params),
     placeholderData: (prev) => prev,

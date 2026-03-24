@@ -2,14 +2,7 @@
 
 import * as React from "react";
 import { format } from "date-fns";
-import {
-  ArrowDownIcon,
-  ArrowUpIcon,
-  Filter,
-  MoreHorizontal,
-  Search,
-  Upload,
-} from "lucide-react";
+import { Filter, MoreHorizontal, Search, Upload } from "lucide-react";
 import { useDeals } from "@/lib/hooks/use-deals";
 import type { DateRangePreset, DealStage } from "@/lib/types";
 import { cn, formatCurrency } from "@/lib/utils";
@@ -91,10 +84,6 @@ export function ActiveDealsTable({
   const [page, setPage] = React.useState(1);
   const [pageSize, setPageSize] = React.useState(10);
   const [stages, setStages] = React.useState<DealStage[]>([]);
-  const [sortBy, setSortBy] = React.useState<"value" | "expectedClose">(
-    "expectedClose",
-  );
-  const [sortDir, setSortDir] = React.useState<"asc" | "desc">("asc");
 
   React.useEffect(() => {
     const t = window.setTimeout(() => setDebouncedQ(q), 300);
@@ -115,18 +104,7 @@ export function ActiveDealsTable({
     stages: stages.length ? stages : undefined,
     page,
     pageSize,
-    sortBy,
-    sortDir,
   });
-
-  function toggleSort(column: "value" | "expectedClose") {
-    if (sortBy === column) {
-      setSortDir((d) => (d === "asc" ? "desc" : "asc"));
-    } else {
-      setSortBy(column);
-      setSortDir(column === "value" ? "desc" : "asc");
-    }
-  }
 
   function toggleStage(stage: DealStage, checked: boolean) {
     setStages((prev) =>
@@ -218,39 +196,9 @@ export function ActiveDealsTable({
               <TableHead>Deal Name</TableHead>
               <TableHead>Client</TableHead>
               <TableHead>Stage</TableHead>
-              <TableHead>
-                <button
-                  type="button"
-                  className="hover:text-foreground inline-flex items-center gap-1 font-medium"
-                  onClick={() => toggleSort("value")}
-                >
-                  Value
-                  {sortBy === "value" ? (
-                    sortDir === "asc" ? (
-                      <ArrowUpIcon />
-                    ) : (
-                      <ArrowDownIcon />
-                    )
-                  ) : null}
-                </button>
-              </TableHead>
+              <TableHead>Value</TableHead>
               <TableHead>Owner</TableHead>
-              <TableHead>
-                <button
-                  type="button"
-                  className="hover:text-foreground inline-flex items-center gap-1 font-medium"
-                  onClick={() => toggleSort("expectedClose")}
-                >
-                  Expected Close
-                  {sortBy === "expectedClose" ? (
-                    sortDir === "asc" ? (
-                      <ArrowUpIcon />
-                    ) : (
-                      <ArrowDownIcon />
-                    )
-                  ) : null}
-                </button>
-              </TableHead>
+              <TableHead>Expected Close</TableHead>
               <TableHead className="w-10 text-right" />
             </TableRow>
           </TableHeader>
