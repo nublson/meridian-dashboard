@@ -1,6 +1,14 @@
 "use client";
 
-import { TrendingDown, TrendingUp } from "lucide-react";
+import type { LucideIcon } from "lucide-react";
+import {
+  BarChart2,
+  MessageCircle,
+  ShoppingBag,
+  TrendingDown,
+  TrendingUp,
+  Users,
+} from "lucide-react";
 import { useMetrics } from "@/lib/hooks/use-metrics";
 import type { DateRangePreset } from "@/lib/types";
 import { formatCurrency, formatPercent, cn } from "@/lib/utils";
@@ -12,6 +20,13 @@ import {
   CardTitle,
 } from "@/components/ui/card";
 import { Skeleton } from "@/components/ui/skeleton";
+
+const METRIC_ICONS: Record<string, LucideIcon> = {
+  "product-revenue": BarChart2,
+  "total-sales": ShoppingBag,
+  "total-deals": Users,
+  conversion: MessageCircle,
+};
 
 export function MetricCards({ dateRange }: { dateRange: DateRangePreset }) {
   const { data, isPending, isError } = useMetrics(dateRange);
@@ -26,7 +41,7 @@ export function MetricCards({ dateRange }: { dateRange: DateRangePreset }) {
 
   if (isPending || !data) {
     return (
-      <div className="grid gap-4 sm:grid-cols-2 xl:grid-cols-4">
+      <div className="grid gap-4 sm:grid-cols-2 md:grid-cols-4">
         {Array.from({ length: 4 }).map((_, i) => (
           <Card key={i}>
             <CardHeader className="flex flex-col gap-2">
@@ -45,8 +60,9 @@ export function MetricCards({ dateRange }: { dateRange: DateRangePreset }) {
   }
 
   return (
-    <div className="grid gap-4 sm:grid-cols-2 xl:grid-cols-4">
+    <div className="grid gap-4 sm:grid-cols-2 md:grid-cols-4">
       {data.metrics.map((m) => {
+        const MetricIcon = METRIC_ICONS[m.id] ?? BarChart2;
         const isUp = m.direction === "up";
         const TrendIcon = isUp ? TrendingUp : TrendingDown;
         const display =
@@ -71,7 +87,11 @@ export function MetricCards({ dateRange }: { dateRange: DateRangePreset }) {
               className="bg-primary absolute top-3 right-3 size-2 rounded-full animate-live-pulse"
               aria-hidden
             />
-            <CardHeader className="flex flex-col gap-1 pb-2">
+            <CardHeader className="flex flex-row items-center gap-2 space-y-0 pb-2">
+              <MetricIcon
+                className="text-muted-foreground size-4 shrink-0"
+                aria-hidden
+              />
               <CardTitle className="text-muted-foreground text-sm font-medium">
                 {m.label}
               </CardTitle>
