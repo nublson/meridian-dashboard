@@ -1,19 +1,8 @@
 "use client";
 
 import * as React from "react";
-import {
-  Bar,
-  BarChart,
-  CartesianGrid,
-  XAxis,
-  YAxis,
-} from "recharts";
-import {
-  ChevronLeft,
-  ChevronRight,
-  MoreHorizontal,
-  Trophy,
-} from "lucide-react";
+import { Bar, BarChart, CartesianGrid, XAxis, YAxis } from "recharts";
+import { ChevronLeft, ChevronRight, MoreHorizontal } from "lucide-react";
 import { useRevenue } from "@/lib/hooks/use-revenue";
 import type { DateRangePreset } from "@/lib/types";
 import { formatCurrency, cn } from "@/lib/utils";
@@ -51,14 +40,72 @@ const chartConfig = {
   },
 } satisfies ChartConfig;
 
-export function RevenueFlowChart({ dateRange }: { dateRange: DateRangePreset }) {
+const INSIGHT_TITLE = "Best Performing Month";
+const INSIGHT_COUNT = 4;
+/** Fixed layout so the insight card never shifts with copy or viewport. */
+const INSIGHT_CARD_W_CLASS = "w-[220px] min-w-[220px]";
+const INSIGHT_CARD_H_CLASS = "h-[137px]";
+
+function buildInsightDescriptions(data: {
+  months: { month: string; thisYear: number; prevYear: number }[];
+  bestMonth: string;
+  bestMonthAmount: number;
+}): string[] {
+  const { months, bestMonth, bestMonthAmount } = data;
+
+  let topGrowthMonth = months[0];
+  let topGrowthRatio = -Infinity;
+  for (const m of months) {
+    if (m.prevYear <= 0) continue;
+    const ratio = (m.thisYear - m.prevYear) / m.prevYear;
+    if (ratio > topGrowthRatio) {
+      topGrowthRatio = ratio;
+      topGrowthMonth = m;
+    }
+  }
+  const growthPct =
+    topGrowthRatio > -Infinity && topGrowthRatio !== Infinity
+      ? Math.round(topGrowthRatio * 100)
+      : 0;
+
+  const q1This = months.slice(0, 3).reduce((a, m) => a + m.thisYear, 0);
+  const q1Prev = months.slice(0, 3).reduce((a, m) => a + m.prevYear, 0);
+  const q1DeltaPct =
+    q1Prev > 0 ? Math.round(((q1This - q1Prev) / q1Prev) * 100) : 0;
+  const q1Trend =
+    q1DeltaPct === 0
+      ? "flat year over year"
+      : q1DeltaPct > 0
+        ? `up ${q1DeltaPct}% year over year`
+        : `down ${Math.abs(q1DeltaPct)}% year over year`;
+
+  return [
+    `${bestMonth} is the highest revenue for the last 6 months with ${formatCurrency(bestMonthAmount)}.`,
+    growthPct > 0
+      ? `${topGrowthMonth.month} shows strong growth compared to previous year — ${growthPct}% YoY.`
+      : `${topGrowthMonth.month} leads recent momentum compared to previous year.`,
+    "Consistent revenue increase throughout the period.",
+    `Q1 total: ${formatCurrency(q1This)} — ${q1Trend}.`,
+  ];
+}
+
+export function RevenueFlowChart({
+  dateRange,
+}: {
+  dateRange: DateRangePreset;
+}) {
   const { data, isPending, isError } = useRevenue(dateRange);
   const [insightIndex, setInsightIndex] = React.useState(0);
+
+  const insightDescriptions = React.useMemo(
+    () => (data ? buildInsightDescriptions(data) : []),
+    [data],
+  );
 
   React.useEffect(() => {
     if (!data) return;
     const id = window.setInterval(() => {
-      setInsightIndex((i) => (i + 1) % 3);
+      setInsightIndex((i) => (i + 1) % INSIGHT_COUNT);
     }, 5000);
     return () => window.clearInterval(id);
   }, [data]);
@@ -90,21 +137,8 @@ export function RevenueFlowChart({ dateRange }: { dateRange: DateRangePreset }) 
 
   const lastSixMonthsTotal = data.months.reduce((a, m) => a + m.thisYear, 0);
 
-  const insights = [
-    {
-      title: "Total revenue (range)",
-      body: `You generated ${formatCurrency(data.totalRevenue)} over the selected period.`,
-    },
-    {
-      title: "Best performing month",
-      body: `${data.bestMonth} is the highest revenue for the last 6 months with ${formatCurrency(data.bestMonthAmount)}.`,
-    },
-    {
-      title: "Last 6 months",
-      body: "Compare this year vs previous year by month in the chart below.",
-    },
-  ];
-  const active = insights[insightIndex] ?? insights[0];
+  const activeDescription =
+    insightDescriptions[insightIndex] ?? insightDescriptions[0] ?? "";
 
   return (
     <Card className="flex min-w-0 flex-1 flex-col lg:h-full">
@@ -167,73 +201,86 @@ export function RevenueFlowChart({ dateRange }: { dateRange: DateRangePreset }) 
       </CardHeader>
       <CardContent className="flex flex-col gap-4 pt-0">
         <div className="flex flex-col gap-4 lg:flex-row lg:gap-6">
-          <div className="flex w-full flex-col gap-4 lg:w-[280px] lg:shrink-0">
+          <div
+            className={cn(
+              "flex flex-col justify-between gap-3 lg:shrink-0",
+              INSIGHT_CARD_W_CLASS,
+            )}
+          >
             <div>
-              <p className="text-2xl font-bold tracking-tight tabular-nums">
+              <p className="text-xl font-bold tracking-tight tabular-nums">
                 {formatCurrency(lastSixMonthsTotal)}
               </p>
-              <CardDescription className="mt-1">
+              <CardDescription className="mt-0.5 text-xs">
                 Total Revenue (Last 6 Months)
               </CardDescription>
             </div>
 
-            <div className="bg-muted/50 border-border flex gap-3 rounded-lg border p-3">
-              <Trophy
-                className="text-primary mt-0.5 size-5 shrink-0"
-                aria-hidden
-              />
-              <div className="min-w-0 flex-1">
-                <p className="text-muted-foreground text-xs font-medium uppercase tracking-wide">
-                  {active.title}
+            <div
+              className={cn(
+                "bg-muted/50 border-border box-border flex shrink-0 flex-col gap-1.5 rounded-lg border px-2 py-3",
+                INSIGHT_CARD_W_CLASS,
+                INSIGHT_CARD_H_CLASS,
+              )}
+            >
+              <div className="flex shrink-0 items-center gap-1.5">
+                <span className="text-sm leading-none" aria-hidden>
+                  🏆
+                </span>
+                <p className="text-foreground line-clamp-1 text-[14px] font-semibold leading-tight">
+                  {INSIGHT_TITLE}
                 </p>
-                <p className="mt-1 text-sm font-semibold leading-snug">
-                  {active.body}
-                </p>
-                <div className="mt-3 flex items-center justify-between gap-2">
-                  <Button
-                    type="button"
-                    variant="ghost"
-                    size="icon-sm"
-                    className="size-8 shrink-0"
-                    aria-label="Previous insight"
-                    onClick={() =>
-                      setInsightIndex(
-                        (i) => (i - 1 + insights.length) % insights.length,
-                      )
-                    }
-                  >
-                    <ChevronLeft className="size-4" />
-                  </Button>
-                  <div className="flex flex-1 justify-center gap-1.5">
-                    {insights.map((_, i) => (
-                      <button
-                        key={i}
-                        type="button"
-                        className={cn(
-                          "size-2 rounded-full transition-colors",
-                          i === insightIndex
-                            ? "bg-primary"
-                            : "bg-muted hover:bg-muted-foreground/40",
-                        )}
-                        aria-label={`Insight ${i + 1}`}
-                        aria-current={i === insightIndex}
-                        onClick={() => setInsightIndex(i)}
-                      />
-                    ))}
-                  </div>
-                  <Button
-                    type="button"
-                    variant="ghost"
-                    size="icon-sm"
-                    className="size-8 shrink-0"
-                    aria-label="Next insight"
-                    onClick={() =>
-                      setInsightIndex((i) => (i + 1) % insights.length)
-                    }
-                  >
-                    <ChevronRight className="size-4" />
-                  </Button>
+              </div>
+              <p
+                className="text-muted-foreground line-clamp-4 min-h-0 flex-1 text-[12px] leading-snug"
+                aria-live="polite"
+              >
+                {activeDescription}
+              </p>
+              <div className="flex shrink-0 items-center justify-between gap-1">
+                <Button
+                  type="button"
+                  variant="ghost"
+                  size="icon-sm"
+                  className="text-muted-foreground size-6 shrink-0 p-0"
+                  aria-label="Previous insight"
+                  onClick={() =>
+                    setInsightIndex(
+                      (i) => (i - 1 + INSIGHT_COUNT) % INSIGHT_COUNT,
+                    )
+                  }
+                >
+                  <ChevronLeft className="size-3" />
+                </Button>
+                <div className="flex min-w-0 flex-1 items-center justify-center gap-1 px-0.5">
+                  {insightDescriptions.map((_, i) => (
+                    <button
+                      key={i}
+                      type="button"
+                      className={cn(
+                        "h-0.5 min-w-0 flex-1 rounded-full transition-[height,background-color]",
+                        i === insightIndex
+                          ? "bg-foreground h-1"
+                          : "bg-muted-foreground/35 hover:bg-muted-foreground/55",
+                      )}
+                      aria-label={`Insight ${i + 1} of ${insightDescriptions.length}`}
+                      aria-current={i === insightIndex}
+                      onClick={() => setInsightIndex(i)}
+                    />
+                  ))}
                 </div>
+                <Button
+                  type="button"
+                  variant="ghost"
+                  size="icon-sm"
+                  className="text-muted-foreground size-6 shrink-0 p-0"
+                  aria-label="Next insight"
+                  onClick={() =>
+                    setInsightIndex((i) => (i + 1) % INSIGHT_COUNT)
+                  }
+                >
+                  <ChevronRight className="size-3" />
+                </Button>
               </div>
             </div>
           </div>
