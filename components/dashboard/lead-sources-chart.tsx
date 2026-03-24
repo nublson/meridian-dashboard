@@ -136,7 +136,7 @@ export function LeadSourcesChart({ dateRange }: { dateRange: DateRangePreset }) 
       <CardContent className="flex flex-1 flex-col gap-4 lg:flex-row lg:items-center">
         <ChartContainer
           config={chartConfig}
-          className="mx-auto aspect-square w-full max-w-[280px]"
+          className="mx-auto aspect-square w-full max-w-[200px]"
         >
           <PieChart>
             <ChartTooltip
@@ -147,8 +147,8 @@ export function LeadSourcesChart({ dateRange }: { dateRange: DateRangePreset }) 
               data={chartData}
               dataKey="count"
               nameKey="key"
-              innerRadius={68}
-              outerRadius={96}
+              innerRadius={55}
+              outerRadius={80}
               strokeWidth={2}
               stroke="var(--background)"
             >
@@ -168,7 +168,7 @@ export function LeadSourcesChart({ dateRange }: { dateRange: DateRangePreset }) 
                         <tspan
                           x={viewBox.cx}
                           y={(viewBox.cy ?? 0) - 8}
-                          className="fill-foreground text-xl font-bold"
+                          className="fill-foreground text-lg font-bold"
                         >
                           {data.totalLeads.toLocaleString()}
                         </tspan>
